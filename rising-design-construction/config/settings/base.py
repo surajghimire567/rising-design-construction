@@ -52,10 +52,11 @@ TEMPLATES = [{
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {"default": dj_database_url.config(
-    default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+_database_url = env("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+DATABASES = {"default": dj_database_url.parse(
+    _database_url,
     conn_max_age=600,
-    ssl_require=not DEBUG,
+    ssl_require=not DEBUG and not _database_url.startswith("sqlite"),
 )}
 
 AUTH_PASSWORD_VALIDATORS = [
