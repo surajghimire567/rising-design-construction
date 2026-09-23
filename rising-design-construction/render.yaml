@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: rising-design-construction
+    runtime: python
+    plan: free
+    buildCommand: npm install --no-audit --no-fund && npm run build:css && pip install -r requirements.txt && python manage.py collectstatic --noinput --settings=config.settings.production && python manage.py migrate --noinput --settings=config.settings.production
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 90 --access-logfile - --error-logfile -
+    healthCheckPath: /health/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.14
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: USE_R2
+        value: "True"
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_PUBLIC_BUCKET
+        value: rising-public-media
+      - key: R2_PRIVATE_BUCKET
+        value: rising-private-inquiries
+      - key: R2_PUBLIC_CUSTOM_DOMAIN
+        sync: false
+      - key: INQUIRY_NOTIFY_EMAIL
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_HOST
+        value: ""
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_HOST_USER
+        value: ""
+      - key: EMAIL_HOST_PASSWORD
+        value: ""
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: EMAIL_USE_SSL
+        value: "False"

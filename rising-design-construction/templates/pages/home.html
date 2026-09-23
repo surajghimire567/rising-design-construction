@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="relative overflow-hidden bg-ink text-white">
+  <div class="absolute -right-24 -top-20 h-80 w-80 rounded-full bg-accent/15 blur-3xl"></div>
+  <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-28 lg:px-8">
+    <div>
+      <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-amber-200"><span class="h-2 w-2 rounded-full bg-accent"></span>Engineering · Design · Construction</p>
+      <h1 class="max-w-2xl text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">Thoughtful engineering. <span class="text-accent">Built with purpose.</span></h1>
+      <p class="mt-6 max-w-xl text-lg leading-8 text-slate-200">{{ business_name }} delivers quality, innovative, and client-focused solutions—from drawings and design through construction and supervision.</p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a class="rounded-full bg-accent px-6 py-3.5 text-center font-bold text-ink hover:bg-amber-400" href="{% url 'consultation' %}">Discuss your project</a>
+        <a class="rounded-full border border-white/40 px-6 py-3.5 text-center font-semibold text-white hover:bg-white/10" href="{% url 'services' %}">Explore services</a>
+      </div>
+      <p class="mt-8 text-sm font-semibold tracking-wide text-slate-300">{{ business_tagline }}</p>
+    </div>
+    <div class="rounded-3xl border border-white/15 bg-white/5 p-5 shadow-2xl shadow-black/20 sm:p-8">
+      <img src="{% static 'images/brand-flyer.png' %}" alt="Rising Design and Construction engineering, design, and construction services" class="max-h-[27rem] w-full rounded-2xl bg-white object-contain">
+      <p class="mt-4 text-center text-xs text-slate-300">Design and construction services in Kathmandu, Nepal</p>
+    </div>
+  </div>
+</section>
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div><p class="font-bold uppercase tracking-[0.18em] text-orange-700">What we do</p><h2 class="mt-2 text-3xl font-extrabold text-ink">Services built around your project</h2></div>
+    <a href="{% url 'services' %}" class="font-bold text-ink underline decoration-accent decoration-2 underline-offset-4">All services →</a>
+  </div>
+  <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {% for service in services %}
+      <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <span class="inline-flex rounded-xl bg-amber-100 px-3 py-2 text-xs font-extrabold tracking-wide text-ink">{{ service.short_label|default:"RISING" }}</span>
+        <h3 class="mt-4 text-xl font-bold text-ink">{{ service.title }}</h3>
+        <p class="mt-3 leading-7 text-slate-600">{{ service.description }}</p>
+      </article>
+    {% empty %}
+      <p class="text-slate-600">Our service details are being updated. Please contact us to discuss your project.</p>
+    {% endfor %}
+  </div>
+</section>
+{% if case_studies %}
+<section class="bg-white py-16">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between gap-4"><div><p class="font-bold uppercase tracking-[0.18em] text-orange-700">Selected work</p><h2 class="mt-2 text-3xl font-extrabold text-ink">Projects with purpose</h2></div><a class="hidden font-bold text-ink underline decoration-accent decoration-2 underline-offset-4 sm:inline" href="{% url 'case_studies' %}">View projects →</a></div>
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      {% for study in case_studies %}<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white"><a href="{% url 'case_study_detail' study.slug %}"><img src="{{ study.cover_image.url }}" alt="{{ study.title }} project cover" loading="lazy" class="h-52 w-full object-cover"><div class="p-5"><p class="text-xs font-bold uppercase tracking-wide text-orange-700">{{ study.service.title }} · {{ study.project_date|date:"Y" }}</p><h3 class="mt-2 text-xl font-bold text-ink">{{ study.title }}</h3><p class="mt-2 leading-6 text-slate-600">{{ study.summary }}</p></div></a></article>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% if testimonials %}
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+  <p class="font-bold uppercase tracking-[0.18em] text-orange-700">Client voices</p><h2 class="mt-2 text-3xl font-extrabold text-ink">Built on trust</h2>
+  <div class="mt-8 grid gap-5 md:grid-cols-3">{% for item in testimonials %}<figure class="rounded-2xl border border-slate-200 bg-white p-6"><blockquote class="leading-7 text-slate-700">“{{ item.quote }}”</blockquote><figcaption class="mt-5 border-t border-slate-100 pt-4 font-bold text-ink">{{ item.client_name }}{% if item.company %}<span class="block text-sm font-normal text-slate-500">{{ item.company }}</span>{% endif %}</figcaption></figure>{% endfor %}</div>
+</section>
+{% endif %}
+<section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"><div class="flex flex-col items-start justify-between gap-6 rounded-3xl bg-amber-100 p-8 sm:flex-row sm:items-center sm:p-10"><div><p class="font-bold uppercase tracking-[0.18em] text-orange-800">Have a project in mind?</p><h2 class="mt-2 text-2xl font-extrabold text-ink sm:text-3xl">Let’s plan the next step together.</h2></div><a class="shrink-0 rounded-full bg-ink px-6 py-3.5 font-bold text-white hover:bg-blue-950" href="{% url 'consultation' %}">Request a consultation</a></div></section>
+{% endblock %}
